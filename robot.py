@@ -14,6 +14,20 @@ class Robot:
         self.sim = sim
 
     def _get_sensor_data(self):
+        """
+        Получение данных с датчика
+
+        Returns
+        -------
+        result : bool
+            Есть ли препятствие в области видимости
+        absolute_coords_2d : list
+            Координаты точек препятствия в абсолютной системе координат
+        relative_coords_2d : list
+            Координаты точек препятствия в системе координат сенсора
+        dists : list
+            Расстояния до каждой из точек препятствий
+        """
         result = bool(sim.getInt32Signal("r"))
 
         if result:
@@ -36,6 +50,18 @@ class Robot:
         return result, absolute_coords_2d, relative_coords_2d, dists
 
     def _set_movement(self, forward_back_vel, left_right_vel, rotation_vel):
+        """
+        Установка движения робота
+
+        Parameters
+        ----------
+        forward_back_vel : float
+            Скорость в направлении вперёд-назад
+        left_right_vel : float
+            Скорость в направлении влево-вправо
+        rotation_vel : float
+            Скорость поворота
+        """
         wheel_joints = [sim.getObject('/' + self.name + '/rollingJoint_fl'),
                         sim.getObject('/' + self.name + '/rollingJoint_rl'),
                         sim.getObject('/' + self.name + '/rollingJoint_rr'),
@@ -46,6 +72,9 @@ class Robot:
         sim.setJointTargetVelocity(wheel_joints[3], -forward_back_vel + left_right_vel + rotation_vel)
 
     def start(self):
+        """
+        Старт работы робота
+        """
         while 1:
             self._set_movement(self.SPEED_BOOST * 1, 0, 0)
 
